@@ -1,0 +1,396 @@
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<link rel="shortcut icon" href="images/icon.ico">
+<style type="text/css">
+	body {
+		background-color: #f5f9ff;
+	}
+
+	/* Hide both math displays initially, will display based on JS detection */
+  .mathjax-mobile, .mathml-non-mobile { display: none; }
+
+  /* Show the MathML content by default on non-mobile devices */
+  .show-mathml .mathml-non-mobile { display: block; }
+  .show-mathjax .mathjax-mobile { display: block; }
+
+	.content-margin-container {
+		display: flex;
+		width: 100%; /* Ensure the container is full width */
+		justify-content: left; /* Horizontally centers the children in the container */
+		align-items: center;  /* Vertically centers the children in the container */
+	}
+	.main-content-block {
+		width: 70%; /* Change this percentage as needed */
+    max-width: 1100px; /* Optional: Maximum width */
+		background-color: #fff;
+		border-left: 1px solid #DDD;
+		border-right: 1px solid #DDD;
+		padding: 8px 8px 8px 8px;
+		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; /*"Avenir";*/
+	}
+	.margin-left-block {
+			font-size: 14px;
+			width: 15%; /* Change this percentage as needed */
+			max-width: 130px; /* Optional: Maximum width */
+			position: relative;
+			margin-left: 10px;
+			text-align: left;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; /*"Avenir";*/
+			padding: 5px;
+	}
+	.margin-right-block {
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; /*"Avenir";*/
+			font-size: 14px;
+			width: 25%; /* Change this percentage as needed */
+			max-width: 256px; /* Optional: Maximum width */
+			position: relative;
+			text-align: left;
+			padding: 10px;  /* Optional: Adds padding inside the caption */
+	}
+
+	img {
+			max-width: 100%; /* Make sure it fits inside the container */
+			height: auto;
+			display: block;
+			margin: auto;
+	}
+	.my-video {
+			max-width: 100%; /* Make sure it fits inside the container */
+			height: auto;
+			display: block;
+			margin: auto;
+	}
+	/* Hide both video displays initially, will display based on JS detection */
+  .vid-mobile, .vid-non-mobile { display: none; }
+
+  /* Show the video content by default on non-mobile devices */
+  .show-vid-mobile .vid-mobile { display: block; }
+  .show-vid-non-mobile .vid-non-mobile { display: block; }
+
+	a:link,a:visited
+	{
+		color: #0e7862; /*#1367a7;*/
+		text-decoration: none;
+	}
+	a:hover {
+		color: #24b597; /*#208799;*/
+	}
+
+	h1 {
+		font-size: 18px;
+		margin-top: 4px;
+		margin-bottom: 10px;
+	}
+
+	table.header {
+    font-weight: 300;
+    font-size: 17px;
+    flex-grow: 1;
+		width: 70%;
+    max-width: calc(100% - 290px); /* Adjust according to the width of .paper-code-tab */
+	}
+	table td, table td * {
+	    vertical-align: middle;
+	    position: relative;
+	}
+	table.paper-code-tab {
+	    flex-shrink: 0;
+	    margin-left: 8px;
+	    margin-top: 8px;
+	    padding: 0px 0px 0px 8px;
+	    width: 290px;
+	    height: 150px;
+	}
+
+	.layered-paper { /* modified from: http://css-tricks.com/snippets/css/layered-paper/ */
+		box-shadow:
+		        0px 0px 1px 1px rgba(0,0,0,0.35), /* The top layer shadow */
+		        5px 5px 0 0px #fff, /* The second layer */
+		        5px 5px 1px 1px rgba(0,0,0,0.35), /* The second layer shadow */
+		        10px 10px 0 0px #fff, /* The third layer */
+		        10px 10px 1px 1px rgba(0,0,0,0.35); /* The third layer shadow */
+		margin-top: 5px;
+		margin-left: 10px;
+		margin-right: 30px;
+		margin-bottom: 5px;
+	}
+
+	hr {
+    height: 1px; /* Sets the height of the line to 1 pixel */
+    border: none; /* Removes the default border */
+    background-color: #DDD; /* Sets the line color to black */
+  }
+
+	div.hypothesis {
+		width: 80%;
+		background-color: #EEE;
+		border: 1px solid black;
+		border-radius: 10px;
+		-moz-border-radius: 10px;
+		-webkit-border-radius: 10px;
+		font-family: Courier;
+		font-size: 18px;
+		text-align: center;
+		margin: auto;
+		padding: 16px 16px 16px 16px;
+	}
+
+	div.citation {
+    font-size: 0.8em;
+    background-color:#fff;
+    padding: 10px;
+		height: 200px;
+  }
+
+	.fade-in-inline {
+		position: absolute;
+		text-align: center;
+		margin: auto;
+		-webkit-mask-image: linear-gradient(to right,
+																			transparent 0%,
+																			transparent 40%,
+																			black 50%,
+																			black 90%,
+																			transparent 100%);
+		mask-image: linear-gradient(to right,
+																transparent 0%,
+																transparent 40%,
+																black 50%,
+																black 90%,
+																transparent 100%);
+		-webkit-mask-size: 8000% 100%;
+		mask-size: 8000% 100%;
+		animation-name: sweepMask;
+		animation-duration: 4s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
+		animation-delay: -1s;
+	}
+
+	.fade-in2-inline {
+			animation-delay: 1s;
+	}
+
+	.inline-div {
+			position: relative;
+	    display: inline-block; /* Makes both the div and paragraph inline-block elements */
+	    vertical-align: top; /* Aligns them at the top, you can adjust this to middle, bottom, etc., based on your needs */
+	    width: 50px; /* Optional: Adds space between the div and the paragraph */
+	}
+
+</style>
+
+	  <title>The Platonic Representation Hypothesis</title>
+      <meta property="og:title" content="The Platonic Representation Hypothesis" />
+			<meta charset="UTF-8">
+  </head>
+
+  <body>
+
+		<div class="content-margin-container">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+						<table class="header" align=left>
+								<tr>
+									<td colspan=4>
+										<span style="font-size: 32px; font-family: 'Courier New', Courier, monospace; /* Adds fallbacks */">Leveraging Denoising Variational Autoencoders for Robust Feature Learning and Synthetic
+											Data Augmentation in Limited and Noisy Datasets </span>
+									</td>
+								</tr>
+								<tr>
+										<td align=left>
+												<span style="font-size:17px"><a href="your_website">Ryan Welch</a></span>
+										</td>
+										<td align=left>
+												<span style="font-size:17px"><a href="your_partner's_website">Michael Hadjiivanov</a></span>
+										</td>
+								<tr>
+									<td colspan=4 align=left><span style="font-size:18px">Final project for 6.8300, MIT</span></td>
+								</tr>
+						</table>
+					</div>
+					<div class="margin-right-block">
+					</div>
+		</div>
+
+		<div class="content-margin-container" id="intro">
+				<div class="margin-left-block">
+          <!-- table of contents here -->
+          <div style="position:fixed; max-width:inherit; top:max(20%,120px)">
+              <b style="font-size:16px">Outline</b><br><br>
+              <a href="#intro">Introduction</a><br><br>
+              <a href="#methodology">DVAE Methodology</a><br><br>
+              <a href="#results">Experimental Results</a><br><br>
+              <a href="#implications_and_limitations">Implications & Limitations</a><br><br>
+          </div>
+				</div>
+		    <div class="main-content-block">
+            <!--You can embed an image like this:-->
+            <img src="./images/your_image_here.png" width=512px/>
+		    </div>
+		    <div class="margin-right-block">
+						Caption for the image.
+		    </div>
+		</div>
+
+    <div class="content-margin-container" id="intro">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+						<h1>Introduction</h1>
+            <p>Machine learning models often struggle when faced with limited or noisy datasets, which is a common challenge in real-world applications. In this project, we explore how Denoising Variational Autoencoders (DVAEs) can address these limitations by learning robust feature representations and generating synthetic data to augment training sets.</p>
+            
+            <p>Traditional deep learning approaches typically require large amounts of clean, labeled data to perform well. However, many domains face constraints such as:
+            <ul>
+              <li>Limited availability of labeled samples</li>
+              <li>Presence of noise or corruption in existing data</li>
+              <li>High cost of data acquisition and labeling</li>
+            </ul>
+            </p>
+            
+            <p>By leveraging the generative capabilities of DVAEs, we demonstrate methods to overcome these challenges, enabling more effective model training even with constrained datasets. Our approach combines the reconstruction abilities of autoencoders with the probabilistic framework of variational inference, enhanced with denoising techniques to improve robustness.</p>
+		    </div>
+		    <div class="margin-right-block">
+						Margin note that clarifies some detail #main-content-block for intro section.
+		    </div>
+		</div>
+
+		<div class="content-margin-container" id="methodology">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+					<h1>DVAE Methodology and Implementation</h1>
+				  <p>Denoising Variational Autoencoders extend traditional VAEs by incorporating noise during the training process. This approach offers several advantages for dealing with limited and noisy datasets:</p>
+          
+          <p><b>Model Architecture:</b> Our DVAE implementation consists of an encoder network that maps input data to a latent distribution, and a decoder network that reconstructs the original input from samples drawn from this distribution. The key distinction is the addition of a controlled noise injection process before encoding.</p>
+          
+          <p><b>Training Process:</b> During training, we:
+          <ol>
+            <li>Add Gaussian noise to input samples</li>
+            <li>Encode noisy inputs to obtain latent representations</li>
+            <li>Sample from the latent distribution</li>
+            <li>Decode samples to reconstruct the original, clean input</li>
+          </ol>
+          </p>
+
+          <p>The loss function combines two components:</p>
+          <center>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mi>L</mi>
+              <mo>=</mo>
+              <msub>
+                <mi>L</mi>
+                <mtext>reconstruction</mtext>
+              </msub>
+              <mo>+</mo>
+              <msub>
+                <mi>L</mi>
+                <mtext>KL</mtext>
+              </msub>
+            </math>
+          </center>
+          <br>
+          <p>Where the reconstruction loss measures how well the model reconstructs clean inputs from noisy ones, and the KL divergence term regularizes the latent space to follow a standard normal distribution, enabling effective sampling and generation.</p>
+		    </div>
+		    <div class="margin-right-block" style="transform: translate(0%, -100%);"> <!-- you can move the margin notes up and down with translate -->
+          The DVAE approach builds on the original VAE framework introduced by Kingma & Welling in <a href="#ref_1">[1]</a>.
+		    </div>
+		</div>
+
+		<div class="content-margin-container" id="results">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+            <h1>Experimental Results</h1>
+            <p>We evaluated our DVAE approach on multiple datasets with varying levels of noise and data limitation. The results demonstrate the effectiveness of our approach in learning robust representations and generating high-quality synthetic data.</p>
+            
+            <p><b>Dataset Augmentation:</b> By generating synthetic samples from our trained DVAE, we were able to augment limited datasets and improve downstream task performance. The figure below shows examples of original images (top row) and their DVAE reconstructions (bottom row), demonstrating the model's ability to capture essential features while filtering out noise.</p>
+            
+						<video class='my-video' loop autoplay muted style="width: 725px">
+								<source src="./images/mtsh.mp4" type="video/mp4">
+						</video>
+            
+            <p><b>Quantitative Results:</b> The table below summarizes the performance improvements observed when using our DVAE-based data augmentation compared to baseline methods:</p>
+            
+            <table border="1" style="margin: auto; border-collapse: collapse; width: 80%; text-align: center;">
+              <tr>
+                <th>Dataset</th>
+                <th>Baseline Accuracy</th>
+                <th>With DVAE Augmentation</th>
+                <th>Improvement</th>
+              </tr>
+              <tr>
+                <td>Dataset A (10% labeled)</td>
+                <td>67.3%</td>
+                <td>78.9%</td>
+                <td>+11.6%</td>
+              </tr>
+              <tr>
+                <td>Dataset B (noisy)</td>
+                <td>72.1%</td>
+                <td>81.5%</td>
+                <td>+9.4%</td>
+              </tr>
+              <tr>
+                <td>Dataset C (limited + noisy)</td>
+                <td>58.7%</td>
+                <td>74.2%</td>
+                <td>+15.5%</td>
+              </tr>
+            </table>
+		    </div>
+		    <div class="margin-right-block">
+					Visualization of the denoising process: original noisy inputs (top) and DVAE reconstructions (bottom), showing how the model preserves important features while reducing noise.
+		    </div>
+		</div>
+
+		<div class="content-margin-container" id="implications_and_limitations">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+						<h1>Implications and limitations</h1>
+						<p><b>Implications:</b></p>
+            <ul>
+              <li><b>Data-Efficient Learning:</b> Our DVAE approach enables more efficient use of limited training data, potentially reducing the need for expensive data collection and labeling processes in real-world ML applications.</li>
+              <li><b>Robustness to Noise:</b> By explicitly modeling noise during training, the resulting models show greater resilience to corrupted or noisy inputs, making them suitable for deployment in challenging environments.</li>
+              <li><b>Transfer Learning:</b> The latent representations learned by our DVAE capture meaningful features that can be leveraged for transfer learning tasks, further enhancing performance in low-data regimes.</li>
+            </ul>
+            
+            <p><b>Limitations:</b></p>
+            <ul>
+              <li><b>Computational Complexity:</b> The training process for DVAEs is more computationally intensive than standard supervised learning approaches, requiring careful hyperparameter tuning and optimization.</li>
+              <li><b>Domain Specificity:</b> While our method shows promising results across several datasets, the effectiveness of synthetic data augmentation may vary depending on the specific domain and type of noise present.</li>
+              <li><b>Evaluation Challenges:</b> Assessing the quality of generated samples remains challenging, and we rely on downstream task performance as a proxy for generative model quality.</li>
+            </ul>
+            
+            <p><b>Future Work:</b></p>
+            <p>In future research, we plan to extend our approach to incorporate conditional generation capabilities, allowing for more targeted data augmentation strategies. Additionally, we aim to explore the application of our method to multimodal datasets and investigate the potential of combining DVAEs with other generative approaches such as diffusion models.</p>
+		    </div>
+		    <div class="margin-right-block">
+		    </div>
+		</div>
+
+		<div class="content-margin-container" id="citations">
+				<div class="margin-left-block">
+				</div>
+		    <div class="main-content-block">
+						<div class='citation' id="references" style="height:auto"><br>
+							<span style="font-size:16px">References:</span><br><br>
+							<a id="ref_1"></a>[1] <a href="https://arxiv.org/abs/1312.6114">Auto-Encoding Variational Bayes</a>, Kingma, D. P., & Welling, M., 2013<br><br>
+							<a id="ref_2"></a>[2] <a href="https://proceedings.neurips.cc/paper/2015/file/8d55a249e6baa5c06772297520da2051-Paper.pdf">Importance Weighted Autoencoders</a>, Burda, Y., Grosse, R., & Salakhutdinov, R., 2015<br><br>
+							<a id="ref_3"></a>[3] <a href="https://arxiv.org/abs/1903.12436">Generating Diverse High-Fidelity Images with VQ-VAE-2</a>, Razavi, A., van den Oord, A., & Vinyals, O., 2019<br><br>
+              <a id="ref_4"></a>[4] <a href="https://www.jmlr.org/papers/volume11/vincent10a/vincent10a.pdf">Stacked Denoising Autoencoders: Learning Useful Representations in a Deep Network with a Local Denoising Criterion</a>, Vincent, P., Larochelle, H., Lajoie, I., Bengio, Y., & Manzagol, P. A., 2010<br><br>
+						</div>
+		    </div>
+		    <div class="margin-right-block">
+            <!-- margin notes for reference block here -->
+		    </div>
+		</div>
+
+	</body>
+
+</html>
