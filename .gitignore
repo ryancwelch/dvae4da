@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Model weights and checkpoints
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.weights
+*.bin
+model_weights/
+checkpoints/
+
+# Model weights in results directory
+results/**/*.pt
+results/**/*.pth
+results/**/*.h5
+results/**/*.ckpt
+results/**/*.weights
+results/**/*.bin
+results/**/model_weights/
+results/**/checkpoints/
+
+# Data
+data/raw/
+*.hdf5
+*.pkl
+*.npy
+data/cifar-10-python.tar.gz
+data/MNIST/raw/
+data/cifar-10-batches-py/
+*.tar.gz
+*.zip
+*.7z
+# Any file larger than 50MB
+# (GitHub has a 100MB limit, but we're being conservative)
+
+# Virtual environments
+env/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db 
