@@ -331,11 +331,17 @@ def create_augmented_datasets(models, dataset_sizes, dataset_name="mnist", noise
         noisy_images = []
         noisy_labels = []
         vae_recon_images = []
+        vae_recon_labels = []
         dvae_recon_images = []
+        dvae_recon_labels = []
         cdvae_recon_images = []
+        cdvae_recon_labels = []
         vae_synthetic_images = []
+        vae_synthetic_labels = []
         dvae_synthetic_images = []
+        dvae_synthetic_labels = []
         cdvae_synthetic_images = []
+        cdvae_synthetic_labels = []
         
         # Process each batch
         with torch.no_grad():
@@ -350,14 +356,17 @@ def create_augmented_datasets(models, dataset_sizes, dataset_name="mnist", noise
                 # VAE reconstructions
                 vae_recons, _, _ = models['vae'](noisy_imgs)
                 vae_recon_images.append(vae_recons.cpu())
+                vae_recon_labels.append(labels.cpu())
                 
                 # DVAE reconstructions
                 dvae_recons, _, _ = models['dvae'](noisy_imgs)
                 dvae_recon_images.append(dvae_recons.cpu())
+                dvae_recon_labels.append(labels.cpu())
                 
                 # ConditionalDVAE reconstructions
                 cdvae_recons, _, _ = models['cdvae'](noisy_imgs, labels)
                 cdvae_recon_images.append(cdvae_recons.cpu())
+                cdvae_recon_labels.append(labels.cpu())
                 
                 # Generate synthetic samples
                 for i in range(len(noisy_imgs)):
@@ -373,7 +382,7 @@ def create_augmented_datasets(models, dataset_sizes, dataset_name="mnist", noise
                         # Decode to get a synthetic image
                         vae_synthetic = models['vae'].decode(z)
                         vae_synthetic_images.append(vae_synthetic.cpu())
-                        noisy_labels.append(label.cpu())  # Same label as original
+                        vae_synthetic_labels.append(label.cpu())
                     
                     # DVAE synthetic samples
                     mean, logvar = models['dvae'].encode(img)
@@ -382,51 +391,65 @@ def create_augmented_datasets(models, dataset_sizes, dataset_name="mnist", noise
                         z = mean + noise
                         dvae_synthetic = models['dvae'].decode(z)
                         dvae_synthetic_images.append(dvae_synthetic.cpu())
-                        noisy_labels.append(label.cpu())
+                        dvae_synthetic_labels.append(label.cpu())
                     
                     # ConditionalDVAE synthetic samples
-                    mean, logvar = models['cdvae'].encode(img)
+                    mean, logvar = models['cdvae'].encode(img, label)
                     for _ in range(num_synthetic_per_image):
                         noise = torch.randn_like(mean) * noise_scale
                         z = mean + noise
                         cdvae_synthetic = models['cdvae'].conditional_decode(z, label)
                         cdvae_synthetic_images.append(cdvae_synthetic.cpu())
-                        noisy_labels.append(label.cpu())
+                        cdvae_synthetic_labels.append(label.cpu())
         
         # Concatenate all images and labels
         noisy_images = torch.cat(noisy_images)
         noisy_labels = torch.cat(noisy_labels)
+        
         vae_recon_images = torch.cat(vae_recon_images)
+        vae_recon_labels = torch.cat(vae_recon_labels)
+        
         dvae_recon_images = torch.cat(dvae_recon_images)
+        dvae_recon_labels = torch.cat(dvae_recon_labels)
+        
         cdvae_recon_images = torch.cat(cdvae_recon_images)
+        cdvae_recon_labels = torch.cat(cdvae_recon_labels)
         
         # Handle the fact that synthetic images are generated one at a time
-        vae_synthetic_images = torch.cat(vae_synthetic_images) if vae_synthetic_images else None
-        dvae_synthetic_images = torch.cat(dvae_synthetic_images) if dvae_synthetic_images else None
-        cdvae_synthetic_images = torch.cat(cdvae_synthetic_images) if cdvae_synthetic_images else None
+        if vae_synthetic_images:
+            vae_synthetic_images = torch.cat(vae_synthetic_images)
+            vae_synthetic_labels = torch.cat(vae_synthetic_labels)
+        
+        if dvae_synthetic_images:
+            dvae_synthetic_images = torch.cat(dvae_synthetic_images)
+            dvae_synthetic_labels = torch.cat(dvae_synthetic_labels)
+            
+        if cdvae_synthetic_images:
+            cdvae_synthetic_images = torch.cat(cdvae_synthetic_images)
+            cdvae_synthetic_labels = torch.cat(cdvae_synthetic_labels)
         
         # Create the 7 datasets
         datasets = {
-            '1_noisy': TensorDataset(noisy_images, noisy_labels[:len(noisy_images)]),
-            '2_vae_recon': TensorDataset(vae_recon_images, noisy_labels[:len(vae_recon_images)]),
-            '3_dvae_recon': TensorDataset(dvae_recon_images, noisy_labels[:len(dvae_recon_images)]),
-            '4_cdvae_recon': TensorDataset(cdvae_recon_images, noisy_labels[:len(cdvae_recon_images)])
+            '1_noisy': TensorDataset(noisy_images, noisy_labels),
+            '2_vae_recon': TensorDataset(vae_recon_images, vae_recon_labels),
+            '3_dvae_recon': TensorDataset(dvae_recon_images, dvae_recon_labels),
+            '4_cdvae_recon': TensorDataset(cdvae_recon_images, cdvae_recon_labels)
         }
         
         # Combine reconstructed + synthetic
         datasets['5_vae_recon_synthetic'] = ConcatDataset([
             datasets['2_vae_recon'],
-            TensorDataset(vae_synthetic_images, noisy_labels[len(noisy_images):len(noisy_images)+len(vae_synthetic_images)])
+            TensorDataset(vae_synthetic_images, vae_synthetic_labels)
         ])
         
         datasets['6_dvae_recon_synthetic'] = ConcatDataset([
             datasets['3_dvae_recon'],
-            TensorDataset(dvae_synthetic_images, noisy_labels[len(noisy_images):len(noisy_images)+len(dvae_synthetic_images)])
+            TensorDataset(dvae_synthetic_images, dvae_synthetic_labels)
         ])
         
         datasets['7_cdvae_recon_synthetic'] = ConcatDataset([
             datasets['4_cdvae_recon'],
-            TensorDataset(cdvae_synthetic_images, noisy_labels[len(noisy_images):len(noisy_images)+len(cdvae_synthetic_images)])
+            TensorDataset(cdvae_synthetic_images, cdvae_synthetic_labels)
         ])
         
         # Save visualization of datasets
@@ -442,8 +465,10 @@ def create_augmented_datasets(models, dataset_sizes, dataset_name="mnist", noise
         test_dataset = dataset_func(
             root="./data",
             train=False,
+            noise_type=None,
             download=True
         )
+
         test_loader = DataLoader(
             test_dataset,
             batch_size=batch_size,

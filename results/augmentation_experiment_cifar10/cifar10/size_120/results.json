@@ -1,0 +1,30 @@
+{
+    "1_noisy": {
+        "test_accuracy": 0.168,
+        "test_loss": 2.2334117143630983
+    },
+    "2_vae_recon": {
+        "test_accuracy": 0.2441,
+        "test_loss": 2.0192136793136597
+    },
+    "3_dvae_recon": {
+        "test_accuracy": 0.2771,
+        "test_loss": 1.982482901763916
+    },
+    "4_cdvae_recon": {
+        "test_accuracy": 0.2505,
+        "test_loss": 2.0332936559677126
+    },
+    "5_vae_recon_synthetic": {
+        "test_accuracy": 0.3344,
+        "test_loss": 1.8121438276290893
+    },
+    "6_dvae_recon_synthetic": {
+        "test_accuracy": 0.3808,
+        "test_loss": 1.866488064956665
+    },
+    "7_cdvae_recon_synthetic": {
+        "test_accuracy": 0.3762,
+        "test_loss": 2.1899483169555665
+    }
+}

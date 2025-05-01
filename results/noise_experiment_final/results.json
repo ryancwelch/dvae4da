@@ -1,0 +1,34 @@
+[
+    {
+        "model_type": "vae",
+        "noise_type": "gaussian",
+        "noise_factor": 1.0,
+        "noisy_psnr": 6.165189743041992,
+        "recon_psnr": 7.4399590492248535,
+        "psnr_improvement": 1.2747693061828613
+    },
+    {
+        "model_type": "dvae",
+        "noise_type": "gaussian",
+        "noise_factor": 1.0,
+        "noisy_psnr": 5.924709320068359,
+        "recon_psnr": 15.355835914611816,
+        "psnr_improvement": 9.431126594543457
+    },
+    {
+        "model_type": "vae",
+        "noise_type": "salt_and_pepper",
+        "noise_factor": 1.0,
+        "noisy_psnr": 2.999925374984741,
+        "recon_psnr": 5.461577415466309,
+        "psnr_improvement": 2.4616520404815674
+    },
+    {
+        "model_type": "dvae",
+        "noise_type": "salt_and_pepper",
+        "noise_factor": 1.0,
+        "noisy_psnr": 3.247100353240967,
+        "recon_psnr": 11.306118965148926,
+        "psnr_improvement": 8.059018611907959
+    }
+]

@@ -178,6 +178,33 @@ class ConditionalDVAE(DVAE):
         
         return x_hat, mu, log_var
     
+    def encode(self, x: torch.Tensor, labels: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Encode inputs to latent distribution parameters with conditioning.
+        
+        Args:
+            x: Input image tensor [B, C, H, W]
+            labels: Class labels [B]
+            
+        Returns:
+            mu: Mean of the latent distribution [B, latent_dim]
+            log_var: Log variance of the latent distribution [B, latent_dim]
+        """
+        return self.encoder(x, labels)
+    
+    def conditional_decode(self, z: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+        """
+        Decode latent vectors to output images with conditioning.
+        
+        Args:
+            z: Latent vector [B, latent_dim]
+            labels: Class labels [B]
+            
+        Returns:
+            x_hat: Reconstructed image [B, C, H, W]
+        """
+        return self.decoder(z, labels)
+    
     def sample(self, n_samples: int, labels: torch.Tensor, device: torch.device) -> torch.Tensor:
         """
         Generate class-conditional samples from the model.
