@@ -86,6 +86,39 @@ def add_structured_noise(images: torch.Tensor,
     return noisy_images
 
 
+def add_blur_noise(images: torch.Tensor,
+                  noise_factor: float = 0.2,
+                  clip_min: float = 0.0,
+                  clip_max: float = 1.0) -> torch.Tensor:
+    """
+    Add blur noise to a batch of images.
+    The noise_factor controls the strength of the blur by interpolating between the original and blurred image.
+    """
+    device = images.device
+    batch_size, channels, height, width = images.shape
+    noisy_images = images.clone()
+
+    kernel_size = 5  # You can adjust this size
+    # Create a random blur kernel for each channel
+    kernel = torch.randn(channels, 1, kernel_size, kernel_size, device=device)
+    kernel = kernel / kernel.view(channels, -1).sum(dim=1, keepdim=True).view(channels, 1, 1, 1)
+
+    for i in range(batch_size):
+        # F.conv2d expects input shape [N, C, H, W], kernel shape [C, 1, k, k], groups=C
+        blurred = F.conv2d(
+            noisy_images[i].unsqueeze(0),  # [1, C, H, W]
+            kernel,
+            padding=kernel_size // 2,
+            groups=channels
+        )
+        # Interpolate between original and blurred image using noise_factor
+        mixed = (1 - noise_factor) * noisy_images[i] + noise_factor * blurred.squeeze(0)
+        noisy_images[i] = torch.clamp(mixed, clip_min, clip_max)
+
+    return noisy_images
+    
+
+
 def add_noise(images: torch.Tensor,
              noise_type: str = 'gaussian',
              noise_params: dict = None) -> torch.Tensor:
@@ -115,6 +148,13 @@ def add_noise(images: torch.Tensor,
             images,
             noise_type=noise_type,
             block_size=noise_params.get('block_size', 8),
+            noise_factor=noise_params.get('noise_factor', 0.2),
+            clip_min=noise_params.get('clip_min', 0.0),
+            clip_max=noise_params.get('clip_max', 1.0)
+        )
+    elif noise_type == 'blur':
+        return add_blur_noise(
+            images,
             noise_factor=noise_params.get('noise_factor', 0.2),
             clip_min=noise_params.get('clip_min', 0.0),
             clip_max=noise_params.get('clip_max', 1.0)

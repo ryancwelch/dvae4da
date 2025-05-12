@@ -443,3 +443,5 @@ def compute_psnr(original: torch.Tensor, reconstructed: torch.Tensor) -> float:
     max_pixel = 1.0  # Assuming images are normalized to [0, 1]
     psnr = 20 * torch.log10(max_pixel / torch.sqrt(mse))
     return psnr.item() 
+
+

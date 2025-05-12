@@ -1,3 +1,6 @@
+*
+!*.py
+
 # Python
 __pycache__/
 *.py[cod]
@@ -52,6 +55,33 @@ data/cifar-10-batches-py/
 *.tar.gz
 *.zip
 *.7z
+*.tar
+*.gz
+*.bz2
+*.rar
+*.iso
+*.img
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.weights
+*.bin
+*.json
+*.yaml
+*.yml
+*.csv
+*.jsonl
+*.jsonl.gz
+*.jsonl.bz2
+
 # Any file larger than 50MB
 # (GitHub has a 100MB limit, but we're being conservative)
 
